@@ -11,7 +11,7 @@ public class GameSettings {
 
     public static float SHIP_FORCE_RATIO = 10;
     public static float TRASH_VELOCITY = 20;
-    public static long STARTING_TRASH_APPEARANCE_COOL_DOWN = 2000;
+    public static long STARTING_TRASH_APPEARANCE_COOL_DOWN = 1000;
     public static int BULLET_VELOCITY = 200;
     public static int SHOOTING_COOL_DOWN = 1000;
 
@@ -25,4 +25,7 @@ public class GameSettings {
     public static final int TRASH_HEIGHT = 100;
     public static final int BULLET_WIDTH = 15;
     public static final int BULLET_HEIGHT = 45;
+    public static final short BONUS_BIT = 16;
+    public static final int BONUS_WIDTH = 40;
+    public static final int BONUS_HEIGHT = 40;
 }

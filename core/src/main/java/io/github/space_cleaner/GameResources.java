@@ -16,4 +16,5 @@ public class GameResources {
     public static final String DESTROY_SOUND_PATH = "sounds/destroy.mp3";
     public static final String SHOOT_SOUND_PATH = "sounds/shoot.mp3";
     public static final String FONT_PATH = "fonts/Montserrat-Bold.ttf";
+    public static final String BONUS_IMG_PATH = "textures/life.png";
 }

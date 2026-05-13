@@ -7,10 +7,10 @@ import io.github.space_cleaner.GameResources;
 
 public class LiveView extends View {
 
-    private final static int livePadding = 6;
+    private static final int livePadding = 6;
+    private static final int MAX_LIVES = 5;
 
     private Texture texture;
-
     private int leftLives;
 
     public LiveView(float x, float y) {
@@ -22,19 +22,19 @@ public class LiveView extends View {
     }
 
     public void setLeftLives(int leftLives) {
-        this.leftLives = leftLives;
+        this.leftLives = Math.min(leftLives, MAX_LIVES);
     }
 
     @Override
     public void draw(SpriteBatch batch) {
-        if (leftLives > 0) batch.draw(texture, x + (texture.getWidth() + livePadding), y, width, height);
-        if (leftLives > 1) batch.draw(texture, x, y, width, height);
-        if (leftLives > 2) batch.draw(texture, x + 2 * (texture.getWidth() + livePadding), y, width, height);
+        for (int i = 0; i < leftLives; i++) {
+            float heartX = x + i * (width + livePadding);
+            batch.draw(texture, heartX, y, width, height);
+        }
     }
 
     @Override
     public void dispose() {
         texture.dispose();
     }
-
 }

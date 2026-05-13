@@ -9,21 +9,27 @@ import io.github.space_cleaner.GameSettings;
 
 public class TrashObject extends GameObject {
     private static final int paddingHorizontal = 30;
+    private static final float BONUS_DROP_CHANCE = 0.2f;
+    private static final Random random = new Random();
 
     private int livesLeft;
+    private boolean bonusSpawned = false;
 
     public TrashObject(int width, int height, String texturePath, World world) {
         super(
             texturePath,
-            width / 2 + paddingHorizontal + (new Random()).nextInt((GameSettings.SCREEN_WIDTH - 2 * paddingHorizontal - width)),
+            calculateX(width),
             GameSettings.SCREEN_HEIGHT + height / 2,
             width, height,
             GameSettings.TRASH_BIT,
             world
         );
-
         body.setLinearVelocity(new Vector2(0, -GameSettings.TRASH_VELOCITY));
         livesLeft = 1;
+    }
+
+    private static int calculateX(int width) {
+        return width / 2 + paddingHorizontal + random.nextInt(GameSettings.SCREEN_WIDTH - 2 * paddingHorizontal - width);
     }
 
     public boolean isAlive() {
@@ -36,6 +42,15 @@ public class TrashObject extends GameObject {
 
     @Override
     public void hit() {
-        livesLeft -= 1;
+        livesLeft--;
+    }
+
+    public BonusObject trySpawnBonus(World world) {
+        if (bonusSpawned) return null;
+        bonusSpawned = true;
+        if (random.nextFloat() < BONUS_DROP_CHANCE) {
+            return new BonusObject(getX(), getY(), world);
+        }
+        return null;
     }
 }

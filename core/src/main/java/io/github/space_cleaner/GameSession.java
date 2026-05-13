@@ -75,6 +75,5 @@ public class GameSession {
     }
 
     private float getTrashPeriodCoolDown() {
-        return (float) Math.exp(-0.001 * (TimeUtils.millis() - sessionStartTime + 1) / 1000);
-    }
+        return (float) Math.exp(-0.002 * (TimeUtils.millis() - sessionStartTime + 1) / 1000);    }
 }

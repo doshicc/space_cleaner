@@ -13,11 +13,19 @@ import io.github.space_cleaner.GameSettings;
 public class ShipObject extends GameObject {
     long lastShotTime;
     int livesLeft;
+    private static final int MAX_LIVES = 5;
+
 
     public ShipObject(int x, int y, int width, int height, String texturePath, World world) {
         super(texturePath, x, y, width, height, GameSettings.SHIP_BIT, world);
         body.setLinearDamping(10);
         livesLeft = 3;
+    }
+
+    public void addLife() {
+        if (livesLeft < MAX_LIVES) {
+            livesLeft++;
+        }
     }
 
 

@@ -15,6 +15,7 @@ import io.github.space_cleaner.GameState;
 import io.github.space_cleaner.MyGdxGame;
 import io.github.space_cleaner.managers.ContactManager;
 import io.github.space_cleaner.managers.MemoryManager;
+import io.github.space_cleaner.objects.BonusObject;
 import io.github.space_cleaner.objects.BulletObject;
 import io.github.space_cleaner.objects.ShipObject;
 import io.github.space_cleaner.objects.TrashObject;
@@ -31,6 +32,7 @@ public class GameScreen extends ScreenAdapter {
     ShipObject shipObject;
     ArrayList<TrashObject> trashArray;
     ArrayList<BulletObject> bulletArray;
+    ArrayList<BonusObject> bonusesArray;
     ContactManager contactManager;
     MovingBackgroundView backgroundView;
     ImageView topBlackoutView;
@@ -53,6 +55,7 @@ public class GameScreen extends ScreenAdapter {
 
         trashArray = new ArrayList<>();
         bulletArray = new ArrayList<>();
+        bonusesArray = new ArrayList<>();
 
         shipObject = new ShipObject(
             GameSettings.SCREEN_WIDTH / 2, 150,
@@ -138,6 +141,7 @@ public class GameScreen extends ScreenAdapter {
 
             updateTrash();
             updateBullets();
+            updateBonuses();
             backgroundView.move();
             gameSession.updateScore();
             scoreTextView.setText("Score: " + gameSession.getScore());
@@ -196,6 +200,9 @@ public class GameScreen extends ScreenAdapter {
         scoreTextView.draw(myGdxGame.batch);
         liveView.draw(myGdxGame.batch);
         pauseButton.draw(myGdxGame.batch);
+        for (BonusObject bonus : bonusesArray) {
+            bonus.draw(myGdxGame.batch);
+        }
 
         if (gameSession.state == GameState.PAUSED) {
             fullBlackoutView.draw(myGdxGame.batch);
@@ -215,17 +222,41 @@ public class GameScreen extends ScreenAdapter {
 
     private void updateTrash() {
         for (int i = 0; i < trashArray.size(); i++) {
+            TrashObject trash = trashArray.get(i);
+            boolean isOutOfFrame = !trash.isInFrame();
+            boolean isDead = !trash.isAlive();
 
-            boolean hasToBeDestroyed = !trashArray.get(i).isAlive() || !trashArray.get(i).isInFrame();
+            if (isOutOfFrame || isDead) {
+                if (isDead) {
+                    BonusObject bonus = trash.trySpawnBonus(myGdxGame.world);
+                    if (bonus != null) {
+                        bonusesArray.add(bonus);
+                    }
 
-            if (!trashArray.get(i).isAlive()) {
-                gameSession.destructionRegistration();
-                if (myGdxGame.audioManager.isSoundOn) myGdxGame.audioManager.explosionSound.play(0.2f);
-            }
+                    gameSession.destructionRegistration();
+                    if (myGdxGame.audioManager.isSoundOn) {
+                        myGdxGame.audioManager.explosionSound.play(0.2f);
+                    }
+                }
 
-            if (hasToBeDestroyed) {
-                myGdxGame.world.destroyBody(trashArray.get(i).body);
+                myGdxGame.world.destroyBody(trash.body);
                 trashArray.remove(i--);
+            }
+        }
+    }
+
+    private void updateBonuses() {
+        for (int i = 0; i < bonusesArray.size(); i++) {
+            BonusObject bonus = bonusesArray.get(i);
+
+            // Если бонус собран или истекло время – удаляем
+            if (bonus.isCollected() || bonus.isExpired()) {
+                if (!bonus.isCollected()) {
+                    myGdxGame.world.destroyBody(bonus.body);
+                }
+                bonus.dispose();
+                bonusesArray.remove(i);
+                i--;
             }
         }
     }
@@ -258,6 +289,7 @@ public class GameScreen extends ScreenAdapter {
         );
 
         bulletArray.clear();
+        bonusesArray.clear();
         gameSession.startGame();
     }
 
