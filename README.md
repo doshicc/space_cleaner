@@ -1,35 +1,111 @@
-# Space_Cleaner 
+# Space Cleaner 🚀
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+**Space Cleaner** — это динамичная аркадная игра для Android, разработанная на фреймворке LibGDX. Игрок управляет космическим кораблём, уничтожает мусор на орбите, собирает бонусы и набирает очки. Игра поддерживает таблицу рекордов, настройки звука и систему бонусов.
 
-This project was generated with a template including simple application launchers and an `ApplicationAdapter` extension that draws libGDX logo.
+## Особенности
 
-## Platforms
+- 🕹️ **Управление** — касанием экрана корабль следует за пальцем.
+- 🗑️ **Мусор** — падает сверху, его нужно уничтожать лазерными выстрелами.
+- ❤️ **Жизни** — при столкновении с мусором теряется жизнь. Максимум — 5.
+- ⭐ **Бонусы** — выпадают из уничтоженного мусора:
+  - ❤️ **Extra Life** — добавляет одну жизнь.
+- 🎵 **Звук и музыка** — можно отключить в настройках.
+- 🏆 **Таблица рекордов** — сохраняются 5 лучших результатов.
 
-- `core`: Main module with the application logic shared by all platforms.
-- `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
-- `android`: Android mobile platform. Needs Android SDK.
+## Управление
 
-## Gradle
+| Действие | Управление |
+|----------|------------|
+| Перемещение корабля | Касание и перемещение пальца по экрану |
+| Выстрел | Автоматически каждые 1000 мс |
+| Пауза | Кнопка паузы в правом верхнем углу |
+| Продолжить / Выход в меню | Кнопки на экране паузы |
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
+## Технологии
 
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `android:lint`: performs Android project validation.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `idea`: generates IntelliJ project data.
-- `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
-- `lwjgl3:run`: starts the application.
-- `test`: runs unit tests (if any).
+- **Язык:** Java (17+)
+- **Фреймворк:** LibGDX 1.12.0
+- **Физика:** Box2D
+- **Целевая платформа:** Android (поддерживается также десктопная версия для отладки)
 
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+## Структура проекта
+
+```
+core/src/main/java/io/github/space_cleaner/
+├── managers/
+│   ├── AudioManager.java      # Звук и музыка
+│   ├── ContactManager.java    # Обработка столкновений Box2D
+│   └── MemoryManager.java     # Сохранение рекордов и настроек
+├── objects/
+│   ├── BonusObject.java       # Бонус 
+│   ├── BulletObject.java      # Пуля
+│   ├── GameObject.java        # Базовый класс для всех игровых объектов
+│   ├── ShipObject.java        # Корабль игрока
+│   └── TrashObject.java       # Мусор
+├── screens/
+│   ├── GameScreen.java        # Основной игровой экран
+│   ├── MenuScreen.java        # Главное меню
+│   └── SettingsScreen.java    # Экран настроек
+├── views/
+│   ├── ButtonView.java        # Кнопка с текстом и текстурой
+│   ├── ImageView.java         # Простое изображение
+│   ├── LiveView.java          # Отображение жизней (до 5 сердец)
+│   ├── MovingBackgroundView.java # Фон с параллакс-эффектом
+│   ├── RecordsListView.java   # Список рекордов
+│   ├── TextView.java          # Текст
+│   └── View.java              # Базовый класс для UI-элементов
+├── FontBuilder.java           # Генератор шрифтов
+├── GameResources.java         # Пути к ресурсам (текстуры, звуки)
+├── GameSession.java           # Состояние игры (счёт, таймеры, пауза)
+├── GameSettings.java          # Константы (размеры, скорости, биты)
+├── GameState.java             # Состояния: PLAYING, PAUSED, ENDED
+└── MyGdxGame.java             # Главный класс, входная точка
+```
+
+## Установка и запуск
+
+### Требования
+
+- Android Studio Hedgehog или новее
+- JDK 17
+- Android SDK (минимум API 24)
+
+### Инструкция
+
+1. Клонируйте репозиторий:
+   ```bash
+   git clone [ссылка на репозиторий](https://github.com/doshicc/space_cleaner.git)
+   ```
+2. Откройте проект в Android Studio.
+3. Подключите Android-устройство или запустите эмулятор (рекомендуется вертикальная ориентация).
+4. Нажмите **Run** (зелёная стрелка).
+
+> Для запуска десктопной версии (отладка) используйте `DesktopLauncher` в модуле `desktop`.
+
+## Настройка ресурсов
+
+Убедитесь, что в папке `android/assets/` присутствуют:
+
+**Текстуры (`textures/`):**
+- `background.png`, `ship.png`, `trash.png`, `bullet.png`
+- `life.png` 
+- `button_background_short.png`, `button_background_long.png`
+- `pause_icon.png`, `blackout_*.png`
+
+**Шрифты (`fonts/`):**
+- `Montserrat-Bold.ttf`
+
+**Звуки (`sounds/`):**
+- `background_music.mp3`, `shoot.mp3`, `destroy.mp3`
+
+## Улучшения, которые можно добавить
+
+- Визуальные эффекты взрывов
+- Разные типы мусора с разной скоростью и прочностью
+- Бонус «Замедление времени»
+- Интеграция с Google Play Games (лидерборды)
+
+## Контакты
+
+Автор: Дон Дарья 
+GitHub: https://github.com/doshicc
